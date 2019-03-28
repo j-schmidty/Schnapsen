@@ -13,7 +13,6 @@ struct Card: Hashable {
     var suit: String
     var value: Int
     var symbol: String
-    var cardPoints: Int
     private var identifier: Int
     var isHighlighted = false
     
@@ -28,11 +27,10 @@ struct Card: Hashable {
         return identifierFactory
     }
     
-    init(suit: String, value: Int, symbol: String, cardPoints: Int) {
+    init(suit: String, value: Int, symbol: String) {
         self.suit = suit
         self.value = value
         self.symbol = symbol
-        self.cardPoints = cardPoints
         self.identifier = Card.getUniqueIdentifier()
     }
     

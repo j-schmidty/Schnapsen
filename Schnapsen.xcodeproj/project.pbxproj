@@ -59,11 +59,11 @@
 			isa = PBXGroup;
 			children = (
 				D8DF190E21E6FA9400F3A68B /* ViewController.swift */,
-				D8DF191E21E6FABA00F3A68B /* Supporting Files */,
 				D8DF191021E6FA9400F3A68B /* Main.storyboard */,
 				D8DF191821E6FA9500F3A68B /* Info.plist */,
 				D8DF191F21E6FB1600F3A68B /* Card.swift */,
 				D8DF192321E6FC2C00F3A68B /* Schnapsen.swift */,
+				D8DF191E21E6FABA00F3A68B /* Supporting Files */,
 			);
 			path = Schnapsen;
 			sourceTree = "<group>";

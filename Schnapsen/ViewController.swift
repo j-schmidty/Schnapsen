@@ -14,20 +14,49 @@ class ViewController: UIViewController {
         updateViewFromModel()
         updateTrumpCardLabel()
         updateCurrentPlayerLabel()
+        updateCurrentPlayerPointsLabel()
     }
     
     private var game = Schnapsen()
     
     @IBAction func touchCard(_ sender: UIButton) {
         if let cardNumber = cardButtons.firstIndex(of: sender) {
-            game.chooseCard(at: cardNumber)
-            updateViewFromModel()
-            updateCurrentTrickLabel()
-            updateCurrentPlayerLabel()
-            print(game)
+            let canChooseCard = game.chooseCard(at: cardNumber)
+            if canChooseCard {
+                if game.playersSwitched {
+                    toggleHidingCardView()
+                    updatePassPhoneView()
+                }
+                updateViewFromModel()
+                updateCurrentTrickLabel()
+                updateCurrentPlayerLabel()
+                updateCurrentPlayerPointsLabel()
+                updateTrumpCardLabel()
+                toggleHidingPassPhoneView()
+                print(game)
+            } else {
+                print("cannot choose card \(cardNumber)")
+            }
         } else {
             print("chosen card was not in cardButtons")
         }
+    }
+    
+    private func toggleHidingCardView() {
+        for cardButton in cardButtons {
+            cardButton.isHidden.toggle()
+        }
+        currentTrickLabel.isHidden.toggle()
+        trumpCardLabel.isHidden.toggle()
+        trumpCardText.isHidden.toggle()
+        currentPlayerLabel.isHidden.toggle()
+        currentPlayerPointsLabel.isHidden.toggle()
+    }
+    
+    private func toggleHidingPassPhoneView() {
+        playersTurnLabel.isHidden.toggle()
+        passPhoneLabel.isHidden.toggle()
+        continueButton.isHidden.toggle()
     }
     
     @IBOutlet var cardButtons: [UIButton]!
@@ -36,17 +65,37 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var trumpCardLabel: UILabel!
     
+    @IBOutlet weak var trumpCardText: UILabel!
+    
     @IBOutlet weak var currentPlayerLabel: UILabel!
+    
+    @IBOutlet weak var currentPlayerPointsLabel: UILabel!
+    
+    @IBOutlet weak var playersTurnLabel: UILabel!
+    
+    @IBOutlet weak var passPhoneLabel: UILabel!
+    
+    @IBOutlet weak var continueButton: UIButton!
+    
+    @IBAction func touchContinue() {
+        toggleHidingPassPhoneView()
+        toggleHidingCardView()
+    }
     
     private func updateViewFromModel() {
         print("Updating view from model...")
-        var cards = game.turn == 0 ? game.playerOneCards : game.playerTwoCards
+        var cards = game.playerOneTurn ? game.playerOneCards : game.playerTwoCards
         for index in cardButtons.indices {
-            print("grabbing card \(index) from player \(game.turn % 2)")
+            print("grabbing card \(index) from player \(game.playerOneTurn ? 1 : 2)")
             print(cards.count)
+            // get the button, get the card, update the button title with info from card
             let button = cardButtons[index]
-            let card = cards[index]
-            button.setTitle(title(for: card), for: UIControl.State.normal)
+            if index < cards.count {
+                let card = cards[index]
+                button.setTitle(title(for: card), for: UIControl.State.normal)
+            } else {
+                button.setTitle("", for: UIControl.State.normal)
+            }
         }
     }
     
@@ -59,11 +108,26 @@ class ViewController: UIViewController {
     }
     
     private func updateTrumpCardLabel() {
-        trumpCardLabel.text = title(for: game.trumpCard)
+        var text = title(for: game.trumpCard)
+        if (game.stock.count == 0) {
+            text = game.trumpCard.suit
+        }
+        trumpCardLabel.text = text
     }
     
     private func updateCurrentPlayerLabel() {
         currentPlayerLabel.text = "Player \(game.currentPlayer())"
+    }
+    
+    private func updateCurrentPlayerPointsLabel() {
+        let points = game.playerOneTurn ? game.playerOnePoints : game.playerTwoPoints
+        currentPlayerPointsLabel.text = "Trick Points: \(points)"
+    }
+    
+    private func updatePassPhoneView() {
+        let player = game.playerOneTurn ? "One" : "Two"
+        playersTurnLabel.text = "Player \(player)'s Turn"
+        passPhoneLabel.text = "(Pass the phone to player \(player.lowercased()))"
     }
     
     private func title(for card: Card) -> String {

@@ -11,9 +11,8 @@ import Foundation
 struct Schnapsen {
     
     var suits: [String] = ["♠", "♣", "♥", "♦"]
-    var values: [Int] = [1, 2, 3, 4, 5]
+    var values: [Int] = [2, 3, 4, 10, 11]
     var symbols: [String] = ["J", "Q", "K", "10", "A"]
-    var cardPoints: [Int] = [10, 2, 3, 4, 11]
     
     var stock = [Card]()
     
@@ -25,15 +24,21 @@ struct Schnapsen {
     var playerOneTricks = [Card]()
     var playerTwoTricks = [Card]()
     
+    var playerOnePoints: Int
+    var playerTwoPoints: Int
+    
     var trumpCard: Card
     
     var leadCard: Card?
     
     var playerOneWon = true
     
-    var turn = 0
+    var playerOneTurn = true
     
-    // TODO - fix this... playerOneWon broke it
+    var playersSwitched = false
+    
+    // Returns 1 if current player is player one and returns 2
+    // if current player is player two
     func currentPlayer() -> Int {
         if leadCard == nil {
             return playerOneWon ? 1 : 2
@@ -42,89 +47,152 @@ struct Schnapsen {
         }
     }
     
-    mutating func chooseCard( at index: Int) {
-        // find and remove played card
-        let card = turn == 0 ? playerOneCards.remove(at: index) : playerTwoCards.remove(at: index)
-        if (stockIsClosed != true) { // stock has not been closed
-            if leadCard != nil { // player is not on lead
-                if leadCard?.suit == card.suit { // trick cards have same suit
-                    if card.value > (leadCard?.value)! { // player who led lost
-                        playerOneWon = !playerOneWon
-                    } // else player who led won (lastTrickWinner)
-                } else if card.suit == trumpCard.suit { // player who led lost
-                    playerOneWon = !playerOneWon
-                }
-                if playerOneWon {
-                    playerOneTricks += [leadCard!, card]
-                    updatePlayersCards()
-                } else {
-                    playerTwoTricks += [leadCard!, card]
-                    playerOneWon = false
-                    updatePlayersCards()
-                }
-                leadCard = nil
-            } else { // player is on lead
-                leadCard = card
+    // Returns true if the given index points to a card
+    // in the current player's hand that can be played
+    // and is then played
+    mutating func chooseCard( at index: Int) -> Bool {
+        assert(index >= 0 && index < 5)
+        
+        if leadCard == nil { // if there is no lead card, then set card to be new lead card
+            
+            let cards = playerOneTurn ? playerOneCards : playerTwoCards
+            if index >= cards.count {
+                return false
             }
-        } else { // stock has been closed
-//            if leadCard != nil { // player is not on lead
-//                // Cases:
-//                // - player not on lead must follow suit
-//                // - cannot follow suit, must play trump card
-//                // - cannot play trump, choose any card
-//
-//                // get current player's cards
-//                let currPlayerCards = lastTrickWinner == 0 ? playerOneCards : playerTwoCards
-//
-//                // make sure currernt player follows suit if can
-//                var hasSuit = false
-//                for card in currPlayerCards {
-//                    if card.suit == leadCard?.suit {
-//                        hasSuit = true
-//                    }
-//                }
-//
-//             // TODO: start here -- make sure current player plays trump if in hand
-//
-//                if leadCard?.suit == card.suit {
-//                    if card.value > (leadCard?.value)! { // player who led lost
-//                        winner = ~winner
-//                    } // else player who led won
-//                }
-//            } else { // player is on lead
-//                leadCard = card
-//            }
+            leadCard = playerOneTurn ? playerOneCards.remove(at: index) : playerTwoCards.remove(at: index)
+            playerOneTurn.toggle()
+            playersSwitched = true
+            return true
+            
+        } else if !stockIsClosed { // if stock is open
+            
+            let card = playerOneTurn ? playerOneCards.remove(at: index) : playerTwoCards.remove(at: index)
+            playCards(card: card)
+            return true
+            
+        } else { // if stock is closed
+            
+            // Cases:
+            // - the player is not on lead, you must follow suit
+            // - if they cannot follow suit, they must play trump card
+            // - if they cannot play trump, they can play any card
+
+            // get current player's cards
+            let currPlayerCards = playerOneTurn ? playerOneCards : playerTwoCards
+            
+            if index >= currPlayerCards.count {
+                return false
+            }
+
+            // find if current player is able to follow suit
+            // find if current player has any trump cards
+            var hasSuit = false
+            var hasTrump = false
+            for currPlayerCard in currPlayerCards {
+                if currPlayerCard.suit == leadCard?.suit {
+                    hasSuit = true
+                }
+                if currPlayerCard.suit == trumpCard.suit {
+                    hasTrump = true
+                }
+            }
+
+            // peek at card at index -- don't want to remove it if it cannot be played
+            var card = playerOneTurn ? playerOneCards[index] : playerTwoCards[index]
+            // if the current player could follow suit and did not, return false
+            // if the current player could not follow suit and had any trumps
+            // and did not play them, return false
+            if hasSuit && leadCard!.suit != card.suit {
+                return false
+            } else if !hasSuit && hasTrump && card.suit != trumpCard.suit {
+                return false
+            }
+
+            // we know the card can be played so we can remove it now
+            if playerOneTurn {
+                card = playerOneCards.remove(at: index)
+            } else {
+                card = playerTwoCards.remove(at: index)
+            }
+            
+            playCards(card: card)
+            return true
         }
-        turn += 1
+    }
+    
+    // Completes the next trick by comparing leadCard to card and updating
+    // players' hands based on who won. Also deals more cards if the stock
+    // is not closed and clears the leadCard variable
+    private mutating func playCards(card: Card) {
+        // if trick cards have same suit, compare their values
+        // to determine the winner of the trick
+        var leadWon = false;
+        if leadCard!.suit == card.suit {
+            leadWon = leadCard!.value > card.value
+        } else {
+            // at this point we know that the cards do NOT have the same
+            // suit so if the player not on lead played a trump, we know
+            // they win, and if they did not play a trump, we know they lose
+            leadWon = card.suit != trumpCard.suit
+        }
+        
+        let playerOneWonLastTrick = playerOneWon
+        
+        // if it is player one's turn, then player one won if whoever was on lead lost (!leadWon)
+        // if it is not player one's turn, then player one won if whoever was on lead won (leadWon)
+        playerOneWon = playerOneTurn ? !leadWon : leadWon
+        
+        // keeps track of whether or not the player who
+        // is on lead will change for the next trick
+        if (playerOneWonLastTrick != playerOneWon) {
+            playersSwitched = true
+        }
+        
+        // give the trick cards to the winner
+        if playerOneWon {
+            playerOneTricks += [leadCard!, card]
+            playerOnePoints += leadCard!.value + card.value
+        } else {
+            playerTwoTricks += [leadCard!, card]
+            playerTwoPoints += leadCard!.value + card.value
+        }
+        
+        // update who is on lead based on who won this trick
+        playerOneTurn = playerOneWon
+        // clear the leadCard variable in preparation of next trick
+        leadCard = nil
+        
+        // deal more cards to players from the stock
+        updatePlayersCards()
     }
     
     private mutating func updatePlayersCards() {
-        if stock.count > 1 {
-            if playerOneWon {
-                playerOneCards.append(stock.remove(at: stock.startIndex))
-                playerTwoCards.append(stock.remove(at: stock.startIndex))
-            } else {
-                playerTwoCards.append(stock.remove(at: stock.startIndex))
-                playerOneCards.append(stock.remove(at: stock.startIndex))
-            }
-        } else if stockIsClosed != true {
+        if stock.count > 1 { // if there is enough cards for next deal
+            // the order doesn't matter -- just need two 'random' cards dealt
+            playerOneCards.append(stock.remove(at: stock.startIndex))
+            playerTwoCards.append(stock.remove(at: stock.startIndex))
+        } else if stockIsClosed != true { // close stock if out of cards to deal
             stockIsClosed = true
         }
     }
     
     mutating func swapTrumpCard( at index: Int) {
         if (stockIsClosed != true) {
-            if turn == 0 { // player one's turn
-                let card = playerOneCards[index]
-                if card.suit == trumpCard.suit {
-                    playerOneCards.append(trumpCard)
-                    trumpCard = playerOneCards.remove(at: index)
+            if playerOneTurn { // player one's turn
+                if playerOneCards[index].suit == trumpCard.suit &&
+                    playerOneCards[index].value == 2 { // make sure you can swap
+                    
+                    let card = playerOneCards.remove(at: index)
+                    playerOneCards.insert(trumpCard, at: index)
+                    trumpCard = card
                 }
             } else { // player two's turn
-                let card = playerTwoCards[index]
-                if card.suit == trumpCard.suit {
-                    playerTwoCards.append(trumpCard)
-                    trumpCard = playerTwoCards.remove(at: index)
+                if playerTwoCards[index].suit == trumpCard.suit &&
+                    playerTwoCards[index].value == 2 { // make sure you can swap
+                    
+                    let card = playerTwoCards.remove(at: index)
+                    playerTwoCards.insert(trumpCard, at: index)
+                    trumpCard = card
                 }
             }
         }
@@ -133,26 +201,16 @@ struct Schnapsen {
     init() {
         // create cards and add to stock
         for suit in suits {
-            let ten = Card(suit: suit, value: values[0], symbol: symbols[0], cardPoints: cardPoints[0])
-            let jack = Card(suit: suit, value: values[1], symbol: symbols[1], cardPoints: cardPoints[1])
-            let queen = Card(suit: suit, value: values[2], symbol: symbols[2], cardPoints: cardPoints[2])
-            let king = Card(suit: suit, value: values[3], symbol: symbols[3], cardPoints: cardPoints[3])
-            let ace = Card(suit: suit, value: values[4], symbol: symbols[4], cardPoints: cardPoints[4])
+            let jack = Card(suit: suit, value: values[0], symbol: symbols[0])
+            let queen = Card(suit: suit, value: values[1], symbol: symbols[1])
+            let king = Card(suit: suit, value: values[2], symbol: symbols[2])
+            let ten = Card(suit: suit, value: values[3], symbol: symbols[3])
+            let ace = Card(suit: suit, value: values[4], symbol: symbols[4])
             stock += [ten, jack, queen, king, ace]
         }
-        // shuffle cards by swapping two cards at a time between 20 and 40 times
+        // shuffle cards
         stock.shuffle()
-//        let randomInt = Int.random(in: 20..<40)
-//        for _ in 0..<randomInt {
-//            let randomIndex1 = Int.random(in: 0..<stock.count)
-//            var randomIndex2 = Int.random(in: 0..<stock.count)
-//            while (randomIndex1 == randomIndex2) {
-//                randomIndex2 = Int.random(in: 0..<stock.count)
-//            }
-//            let card = stock[randomIndex1]
-//            stock[randomIndex1] = stock[randomIndex2]
-//            stock[randomIndex2] = card
-//        }
+
         // deal 5 cards to each player
         for _ in 0..<5 {
             playerOneCards.append(stock.remove(at: stock.startIndex))
@@ -164,6 +222,9 @@ struct Schnapsen {
         trumpCard = stock.remove(at: stock.startIndex)
         // add trump card to end of stock
         stock.append(trumpCard)
+        
+        playerOnePoints = 0
+        playerTwoPoints = 0
     }
     
 }
