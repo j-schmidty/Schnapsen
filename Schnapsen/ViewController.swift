@@ -23,7 +23,10 @@ class ViewController: UIViewController {
         if let cardNumber = cardButtons.firstIndex(of: sender) {
             let canChooseCard = game.chooseCard(at: cardNumber)
             if canChooseCard {
-                if game.playersSwitched {
+                if game.gameIsOver {
+                    toggleHidingCardView()
+                    updateGameOverView()
+                } else if game.playersSwitched {
                     toggleHidingCardView()
                     updatePassPhoneView()
                 }
@@ -128,6 +131,34 @@ class ViewController: UIViewController {
         let player = game.playerOneTurn ? "One" : "Two"
         playersTurnLabel.text = "Player \(player)'s Turn"
         passPhoneLabel.text = "(Pass the phone to player \(player.lowercased()))"
+    }
+    
+    private func updateGameOverView() {
+        let playerOneWon = game.playerOnePoints >= 66
+        let winner: String
+        let winnerPoints: Int
+        let winnerTricks: Int
+        let loser: String
+        let loserPoints: Int
+        let loserTricks: Int
+        if playerOneWon {
+            winner = "One"
+            winnerPoints = game.playerOnePoints
+            winnerTricks = game.playerOneTricks.count / 2
+            loser = "Two"
+            loserPoints = game.playerTwoPoints
+            loserTricks = game.playerTwoTricks.count / 2
+        } else {
+            winner = "Two"
+            winnerPoints = game.playerTwoPoints
+            winnerTricks = game.playerTwoTricks.count / 2
+            loser = "One"
+            loserPoints = game.playerOnePoints
+            loserTricks = game.playerOneTricks.count / 2
+        }
+        playersTurnLabel.text = "Player \(winner) Won with \(winnerPoints) points and \(winnerTricks) tricks!"
+        passPhoneLabel.text = "(Player \(loser) had \(loserPoints) points and \(loserTricks) tricks)"
+        
     }
     
     private func title(for card: Card) -> String {

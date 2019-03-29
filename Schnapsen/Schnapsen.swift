@@ -10,6 +10,8 @@ import Foundation
 
 struct Schnapsen {
     
+    let POINTS = 66
+    
     var suits: [String] = ["♠", "♣", "♥", "♦"]
     var values: [Int] = [2, 3, 4, 10, 11]
     var symbols: [String] = ["J", "Q", "K", "10", "A"]
@@ -36,6 +38,8 @@ struct Schnapsen {
     var playerOneTurn = true
     
     var playersSwitched = false
+    
+    var gameIsOver = false
     
     // Returns 1 if current player is player one and returns 2
     // if current player is player two
@@ -159,21 +163,36 @@ struct Schnapsen {
         
         // update who is on lead based on who won this trick
         playerOneTurn = playerOneWon
+        
         // clear the leadCard variable in preparation of next trick
         leadCard = nil
         
-        // deal more cards to players from the stock
-        updatePlayersCards()
+        // Check if there is a winner
+        if playerOnePoints >= POINTS || playerTwoPoints >= POINTS {
+            gameIsOver = true
+        } else {
+            // deal more cards to players from the stock
+            dealCards()
+        }
     }
     
-    private mutating func updatePlayersCards() {
-        if stock.count > 1 { // if there is enough cards for next deal
-            // the order doesn't matter -- just need two 'random' cards dealt
+    private mutating func dealCards() {
+        while playerOneCards.count < 5 && playerTwoCards.count < 5 && stock.count > 1 {
             playerOneCards.append(stock.remove(at: stock.startIndex))
             playerTwoCards.append(stock.remove(at: stock.startIndex))
-        } else if stockIsClosed != true { // close stock if out of cards to deal
+        }
+        if stock.count == 0 && !stockIsClosed {
             stockIsClosed = true
         }
+        
+        
+//        if stock.count > 1 { // if there is enough cards for next deal
+//            // the order doesn't matter -- just need two 'random' cards dealt
+//            playerOneCards.append(stock.remove(at: stock.startIndex))
+//            playerTwoCards.append(stock.remove(at: stock.startIndex))
+//        } else if stockIsClosed != true { // close stock if out of cards to deal
+//            stockIsClosed = true
+//        }
     }
     
     mutating func swapTrumpCard( at index: Int) {
@@ -208,23 +227,16 @@ struct Schnapsen {
             let ace = Card(suit: suit, value: values[4], symbol: symbols[4])
             stock += [ten, jack, queen, king, ace]
         }
+        playerOnePoints = 0
+        playerTwoPoints = 0
         // shuffle cards
         stock.shuffle()
-
-        // deal 5 cards to each player
-        for _ in 0..<5 {
-            playerOneCards.append(stock.remove(at: stock.startIndex))
-        }
-        for _ in 0..<5 {
-            playerTwoCards.append(stock.remove(at: stock.startIndex))
-        }
         // pick trump card
         trumpCard = stock.remove(at: stock.startIndex)
         // add trump card to end of stock
         stock.append(trumpCard)
-        
-        playerOnePoints = 0
-        playerTwoPoints = 0
+        // deal 5 cards to each player
+        dealCards()
     }
     
 }
