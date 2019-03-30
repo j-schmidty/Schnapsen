@@ -82,8 +82,8 @@ class ViewController: UIViewController {
         
         if m1Card1 != nil && m2Card1 != nil { // if there are two marriages in the player's hand
             
-            let marriage1 = "\(m1Card1!.suit)\(m1Card1!.value) and \(m1Card2!.suit)\(m1Card2!.value)"
-            let marriage2 = "\(m2Card1!.suit)\(m2Card1!.value) and \(m2Card2!.suit)\(m2Card2!.value)"
+            let marriage1 = "\(m1Card1!.suit)\(m1Card1!.symbol) and \(m1Card2!.suit)\(m1Card2!.symbol)"
+            let marriage2 = "\(m2Card1!.suit)\(m2Card1!.symbol) and \(m2Card2!.suit)\(m2Card2!.symbol)"
             let alert = UIAlertController(title: "Which marriage do you want to declare?", message: "", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: marriage1, style: .default, handler: { action in
                 card1 = m1Card1
@@ -102,7 +102,7 @@ class ViewController: UIViewController {
             
         } else if m1Card1 != nil { // if there is one marriage in the player's hand
             
-            let marriage1 = "\(m1Card1!.suit)\(m1Card1!.value) and \(m1Card2!.suit)\(m1Card2!.value)"
+            let marriage1 = "\(m1Card1!.suit)\(m1Card1!.symbol) and \(m1Card2!.suit)\(m1Card2!.symbol)"
             
             let alert = UIAlertController(title: "Are you sure you want to declare this marriage?", message: marriage1, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
