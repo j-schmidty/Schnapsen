@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D8658143224EC67C003DF22E /* SMarriageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8658142224EC67C003DF22E /* SMarriageButton.swift */; };
 		D8DF190D21E6FA9400F3A68B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF190C21E6FA9400F3A68B /* AppDelegate.swift */; };
 		D8DF190F21E6FA9400F3A68B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF190E21E6FA9400F3A68B /* ViewController.swift */; };
 		D8DF191221E6FA9400F3A68B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8DF191021E6FA9400F3A68B /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D8658142224EC67C003DF22E /* SMarriageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMarriageButton.swift; sourceTree = "<group>"; };
 		D8DF190921E6FA9400F3A68B /* Schnapsen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Schnapsen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8DF190C21E6FA9400F3A68B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D8DF190E21E6FA9400F3A68B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -39,6 +41,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D8658141224EC619003DF22E /* Subclasses */ = {
+			isa = PBXGroup;
+			children = (
+				D8658142224EC67C003DF22E /* SMarriageButton.swift */,
+			);
+			path = Subclasses;
+			sourceTree = "<group>";
+		};
 		D8DF190021E6FA9400F3A68B = {
 			isa = PBXGroup;
 			children = (
@@ -58,6 +68,7 @@
 		D8DF190B21E6FA9400F3A68B /* Schnapsen */ = {
 			isa = PBXGroup;
 			children = (
+				D8658141224EC619003DF22E /* Subclasses */,
 				D8DF190E21E6FA9400F3A68B /* ViewController.swift */,
 				D8DF191021E6FA9400F3A68B /* Main.storyboard */,
 				D8DF191821E6FA9500F3A68B /* Info.plist */,
@@ -150,6 +161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8DF190F21E6FA9400F3A68B /* ViewController.swift in Sources */,
+				D8658143224EC67C003DF22E /* SMarriageButton.swift in Sources */,
 				D8DF192421E6FC2C00F3A68B /* Schnapsen.swift in Sources */,
 				D8DF192021E6FB1600F3A68B /* Card.swift in Sources */,
 				D8DF190D21E6FA9400F3A68B /* AppDelegate.swift in Sources */,

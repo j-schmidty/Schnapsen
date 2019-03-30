@@ -15,6 +15,7 @@ struct Card: Hashable {
     var symbol: String
     private var identifier: Int
     var isHighlighted = false
+    var marriage = false
     
     static func ==(lhs: Card, rhs: Card) -> Bool {
         return lhs.identifier == rhs.identifier

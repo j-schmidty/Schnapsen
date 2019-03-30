@@ -39,6 +39,8 @@ struct Schnapsen {
     
     var playersSwitched = false
     
+    var marriageSuit: String?
+    
     var gameIsOver = false
     
     // Returns 1 if current player is player one and returns 2
@@ -56,10 +58,17 @@ struct Schnapsen {
     // and is then played
     mutating func chooseCard( at index: Int) -> Bool {
         assert(index >= 0 && index < 5)
+        let cards = playerOneTurn ? playerOneCards : playerTwoCards
+        
+        // if player declared a marriage, they must play the king or queen
+        if marriageSuit != nil && cards[index].suit != marriageSuit
+            && cards[index].value != 3 && cards[index].value != 4 {
+            return false
+        }
+        marriageSuit = nil
         
         if leadCard == nil { // if there is no lead card, then set card to be new lead card
             
-            let cards = playerOneTurn ? playerOneCards : playerTwoCards
             if index >= cards.count {
                 return false
             }
@@ -184,15 +193,6 @@ struct Schnapsen {
         if stock.count == 0 && !stockIsClosed {
             stockIsClosed = true
         }
-        
-        
-//        if stock.count > 1 { // if there is enough cards for next deal
-//            // the order doesn't matter -- just need two 'random' cards dealt
-//            playerOneCards.append(stock.remove(at: stock.startIndex))
-//            playerTwoCards.append(stock.remove(at: stock.startIndex))
-//        } else if stockIsClosed != true { // close stock if out of cards to deal
-//            stockIsClosed = true
-//        }
     }
     
     mutating func swapTrumpCard( at index: Int) {
@@ -214,6 +214,29 @@ struct Schnapsen {
                     trumpCard = card
                 }
             }
+        }
+    }
+    
+    mutating func declareMarriage(card1: Card, card2: Card) {
+        let marriage = card1.marriage && card2.marriage
+        let hasKing = card1.value == 4 || card2.value == 4
+        let hasQueen = card1.value == 3 || card2.value == 3
+        let isTrumpMarriage = card1.suit == trumpCard.suit
+        if !marriage && card1.suit == card2.suit && hasKing && hasQueen {
+            if playerOneTurn {
+                if isTrumpMarriage {
+                    playerOnePoints += 40
+                } else {
+                    playerOnePoints += 20
+                }
+            } else {
+                if isTrumpMarriage {
+                    playerTwoPoints += 40
+                } else {
+                    playerTwoPoints += 20
+                }
+            }
+            marriageSuit = card1.suit
         }
     }
     
