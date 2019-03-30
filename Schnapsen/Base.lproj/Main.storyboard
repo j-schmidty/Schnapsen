@@ -139,9 +139,12 @@
                                     <action selector="touchContinue" destination="BYZ-38-t0r" eventType="touchUpInside" id="zLB-6U-W4Q"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ibx-vF-oiB" customClass="SMarriageButton" customModule="Schnapsen" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ibx-vF-oiB" customClass="SMarriageButton" customModule="Schnapsen" customModuleProvider="target">
                                 <rect key="frame" x="652" y="310" width="180" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="180" id="LGP-UR-kLm"/>
+                                    <constraint firstAttribute="height" constant="40" id="SXo-FY-jnr"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <state key="normal" title="Declare Marriage">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -150,13 +153,29 @@
                                     <action selector="touchMarriage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="D1F-st-WKC"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleAspectFit" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="56L-hf-ut4" customClass="SMarriageButton" customModule="Schnapsen" customModuleProvider="target">
+                                <rect key="frame" x="64" y="310" width="180" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="naZ-E2-yRj"/>
+                                    <constraint firstAttribute="width" constant="180" id="yTZ-mL-pJq"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="Swap Trump Card">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="touchSwapTrump:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hMc-MF-7yH"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.078652770091242566" green="0.52393321700507611" blue="0.24613208252744034" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="mh0-bv-tLp" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="2Fj-Gz-xy7"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="naJ-Zh-ZvN" secondAttribute="trailing" constant="20" id="2pM-KR-HEy"/>
+                            <constraint firstItem="56L-hf-ut4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="3E5-uV-oUh"/>
                             <constraint firstItem="I7D-lf-X7X" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Se0-Jx-mTb" secondAttribute="bottom" constant="20" id="5br-ud-Q3k"/>
                             <constraint firstItem="etb-en-k2l" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="7TN-vn-4Sq"/>
+                            <constraint firstItem="ibx-vF-oiB" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="I7D-lf-X7X" secondAttribute="trailing" constant="8" symbolic="YES" id="9aa-se-2XR"/>
                             <constraint firstItem="etb-en-k2l" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="9ky-Jm-odc"/>
                             <constraint firstItem="etb-en-k2l" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5sQ-0Y-9rX" secondAttribute="trailing" constant="8" symbolic="YES" id="AlH-w3-hkk"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="XGL-yH-D2D" secondAttribute="trailing" constant="20" id="Ff4-UM-leJ"/>
@@ -164,12 +183,16 @@
                             <constraint firstItem="naJ-Zh-ZvN" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="IHc-7Q-77v"/>
                             <constraint firstItem="I7D-lf-X7X" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="J3Y-KJ-Nd4"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="I7D-lf-X7X" secondAttribute="bottom" constant="20" id="Kkn-ak-gyW"/>
+                            <constraint firstItem="I7D-lf-X7X" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="56L-hf-ut4" secondAttribute="trailing" constant="8" symbolic="YES" id="KrX-an-oIA"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="ibx-vF-oiB" secondAttribute="bottom" constant="20" id="NaE-ob-eu8"/>
                             <constraint firstItem="Se0-Jx-mTb" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="QKS-0K-JEb"/>
                             <constraint firstItem="tbS-dd-jMN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="Qed-p7-WdT"/>
                             <constraint firstItem="etb-en-k2l" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="tbS-dd-jMN" secondAttribute="trailing" constant="8" symbolic="YES" id="TxR-Kr-loD"/>
                             <constraint firstItem="tbS-dd-jMN" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="VxE-cM-rf7"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ibx-vF-oiB" secondAttribute="trailing" constant="20" id="acc-mh-1yK"/>
                             <constraint firstItem="5sQ-0Y-9rX" firstAttribute="top" secondItem="tbS-dd-jMN" secondAttribute="bottom" constant="8" id="apl-rh-X2D"/>
                             <constraint firstItem="Se0-Jx-mTb" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="g48-u0-IvU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="56L-hf-ut4" secondAttribute="bottom" constant="20" id="sE9-Ix-PfU"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="mh0-bv-tLp" secondAttribute="bottom" constant="45" id="tJj-z1-SWg"/>
                             <constraint firstItem="XGL-yH-D2D" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="vdl-f3-5bW"/>
                             <constraint firstItem="naJ-Zh-ZvN" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="etb-en-k2l" secondAttribute="trailing" constant="8" symbolic="YES" id="xHw-LF-DA8"/>
@@ -185,6 +208,7 @@
                         <outlet property="marriageButton" destination="ibx-vF-oiB" id="D0r-SS-173"/>
                         <outlet property="passPhoneLabel" destination="wKZ-xC-pZP" id="UTg-hv-rhk"/>
                         <outlet property="playersTurnLabel" destination="LFb-7x-hnI" id="F6s-H1-g1r"/>
+                        <outlet property="swapTrumpButton" destination="56L-hf-ut4" id="EcE-JA-Xqv"/>
                         <outlet property="trumpCardLabel" destination="5sQ-0Y-9rX" id="rc1-lW-4Fn"/>
                         <outlet property="trumpCardText" destination="tbS-dd-jMN" id="s43-3R-hBp"/>
                         <outletCollection property="cardButtons" destination="vG1-bt-lzr" collectionClass="NSMutableArray" id="cFM-QR-2At"/>

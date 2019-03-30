@@ -11,6 +11,7 @@ import UIKit
 class SMarriageButton: UIButton {
 
     var isOn = false
+    let fontConstant: CGFloat = 0.45
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,6 +27,7 @@ class SMarriageButton: UIButton {
         layer.borderWidth = 2.0
         layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         layer.cornerRadius = frame.size.height / 2
+        titleLabel?.font = UIFont.systemFont(ofSize: frame.height * fontConstant)
         
         setTitleColor(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), for: .normal)
         addTarget(self, action: #selector(SMarriageButton.buttonPressed), for: .touchUpInside)

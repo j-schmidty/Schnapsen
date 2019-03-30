@@ -65,6 +65,8 @@ class ViewController: UIViewController {
     
     @IBOutlet var marriageButton: SMarriageButton!
     
+    @IBOutlet var swapTrumpButton: SMarriageButton!
+    
     @IBAction func touchContinue() {
         if game.gameIsOver {
             game = Schnapsen()
@@ -82,8 +84,8 @@ class ViewController: UIViewController {
         
         if m1Card1 != nil && m2Card1 != nil { // if there are two marriages in the player's hand
             
-            let marriage1 = "\(m1Card1!.suit)\(m1Card1!.symbol) and \(m1Card2!.suit)\(m1Card2!.symbol)"
-            let marriage2 = "\(m2Card1!.suit)\(m2Card1!.symbol) and \(m2Card2!.suit)\(m2Card2!.symbol)"
+            let marriage1 = "\(title(for: m1Card1!)) and \(title(for: m1Card2!))"
+            let marriage2 = "\(title(for: m2Card1!)) and \(title(for: m2Card2!))"
             let alert = UIAlertController(title: "Which marriage do you want to declare?", message: "", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: marriage1, style: .default, handler: { action in
                 card1 = m1Card1
@@ -102,7 +104,7 @@ class ViewController: UIViewController {
             
         } else if m1Card1 != nil { // if there is one marriage in the player's hand
             
-            let marriage1 = "\(m1Card1!.suit)\(m1Card1!.symbol) and \(m1Card2!.suit)\(m1Card2!.symbol)"
+            let marriage1 = "\(title(for: m1Card1!)) and \(title(for: m1Card2!))"
             
             let alert = UIAlertController(title: "Are you sure you want to declare this marriage?", message: marriage1, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
@@ -181,6 +183,45 @@ class ViewController: UIViewController {
             }
         }
         return (m1Card1, m1Card2, m2Card1, m2Card2)
+    }
+    
+    @IBAction func touchSwapTrump(_ sender: SMarriageButton) {
+        let cards = game.playerOneTurn ? game.playerOneCards : game.playerTwoCards
+        let index = findJackTrumpIndex(cards: cards)
+        
+        if index == -1 {
+            let alert = UIAlertController(title: "You don't have \(game.trumpCard.suit)J!", message: "", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
+                self.swapTrumpButton.buttonPressed()
+            }))
+            self.present(alert, animated: true)
+        } else {
+            let oldTrump = title(for: game.trumpCard)
+            let newTrump = title(for: cards[index])
+            let alert = UIAlertController(title: "Swap \(newTrump) for \(oldTrump)?", message: "", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
+                self.game.swapTrumpCard(at: index)
+                self.viewDidLoad()
+                self.swapTrumpButton.buttonPressed()
+            }))
+            alert.addAction(UIAlertAction(title: "No", style: .default, handler: { action in
+                self.swapTrumpButton.buttonPressed()
+            }))
+            self.present(alert, animated: true)
+        }
+    }
+    
+    // Returns the index of the jack of trumps or -1 if
+    // it is not in cards
+    private func findJackTrumpIndex(cards: [Card]) -> Int {
+        var index = 0
+        for card in cards {
+            if card.suit == game.trumpCard.suit && card.value == 2 {
+                return index
+            }
+            index += 1
+        }
+        return -1
     }
     
     //  ///////////////////////////////////////////////////////////////
@@ -277,6 +318,7 @@ class ViewController: UIViewController {
         currentPlayerLabel.isHidden.toggle()
         currentPlayerPointsLabel.isHidden.toggle()
         marriageButton.isHidden.toggle()
+        swapTrumpButton.isHidden.toggle()
     }
     
     private func toggleHidingPassPhoneView() {

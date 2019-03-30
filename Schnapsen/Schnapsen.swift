@@ -203,6 +203,8 @@ struct Schnapsen {
                     
                     let card = playerOneCards.remove(at: index)
                     playerOneCards.insert(trumpCard, at: index)
+                    stock.remove(at: stock.count - 1)
+                    stock.append(card)
                     trumpCard = card
                 }
             } else { // player two's turn
@@ -211,6 +213,8 @@ struct Schnapsen {
                     
                     let card = playerTwoCards.remove(at: index)
                     playerTwoCards.insert(trumpCard, at: index)
+                    stock.remove(at: stock.count - 1)
+                    stock.append(card)
                     trumpCard = card
                 }
             }
